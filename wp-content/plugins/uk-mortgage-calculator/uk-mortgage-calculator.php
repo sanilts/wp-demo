@@ -3,7 +3,7 @@
  * Plugin Name: UK Mortgage Calculator Pro
  * Plugin URI: https://yourwebsite.com
  * Description: Professional UK mortgage calculators for Elementor with comprehensive calculations
- * Version: 1.0.6
+ * Version: 1.0.7
  * Author: Your Name
  * Author URI: https://yourwebsite.com
  * Text Domain: uk-mortgage-calc
