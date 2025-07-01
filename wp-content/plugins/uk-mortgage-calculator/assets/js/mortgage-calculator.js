@@ -36,6 +36,13 @@
             
             // Rate comparison
             $(document).on('click', '.compare-rates-btn', this.showRateComparison);
+            
+            // Modal close
+            $(document).on('click', '.close-modal, .rate-comparison-modal', function(e) {
+                if (e.target === this) {
+                    $('.rate-comparison-modal').remove();
+                }
+            });
         },
         
         handleFormSubmit: function(e) {
@@ -66,12 +73,22 @@
             const $result = $calculator.find('.calculator-result');
             const $buttons = $calculator.find('.pdf-download-btn, .email-report-btn');
             
+            // Clear previous errors
+            $calculator.find('.calculator-error').remove();
+            
             // Show loading
             $loading.show();
             $result.hide();
             
             // Collect form data
             const formData = this.collectFormData($form);
+            
+            // Validate required fields
+            if (!this.validateRequiredFields(formData, calculatorType)) {
+                $loading.hide();
+                this.showError('Please fill in all required fields.');
+                return;
+            }
             
             // Perform calculation
             $.ajax({
@@ -84,17 +101,18 @@
                     nonce: ukMortgageAjax.nonce
                 },
                 success: function(response) {
-                    if (response.success) {
+                    if (response.success && response.data) {
                         UKMortgageCalculator.displayResults(response.data, calculatorType, $calculator);
                         $buttons.show();
                         
                         // Track analytics
                         UKMortgageCalculator.trackCalculation(calculatorType, formData, response.data);
                     } else {
-                        UKMortgageCalculator.showError('Calculation failed. Please check your inputs.');
+                        UKMortgageCalculator.showError(response.data || 'Calculation failed. Please check your inputs.');
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', status, error);
                     UKMortgageCalculator.showError('Connection error. Please try again.');
                 },
                 complete: function() {
@@ -111,13 +129,18 @@
                 const name = $field.attr('name');
                 let value = $field.val();
                 
+                // Skip the nonce field
+                if (name === 'uk_mortgage_form_nonce' || name === '_wp_http_referer') {
+                    return;
+                }
+                
                 // Handle checkboxes
                 if ($field.attr('type') === 'checkbox') {
                     if (!data[name]) data[name] = [];
                     if ($field.is(':checked')) {
                         data[name].push(value);
                     }
-                } else if (name && value) {
+                } else if (name && value !== '') {
                     // Convert numeric values
                     if ($field.attr('type') === 'number') {
                         value = parseFloat(value) || 0;
@@ -126,13 +149,26 @@
                 }
             });
             
-            // Calculate total fees for remortgage
-            if (data.arrangement_fee || data.valuation_fee || data.legal_fees || data.exit_fee) {
-                data.fees = (data.arrangement_fee || 0) + (data.valuation_fee || 0) + 
-                           (data.legal_fees || 0) + (data.exit_fee || 0);
+            return data;
+        },
+        
+        validateRequiredFields: function(data, calculatorType) {
+            const requiredFields = {
+                'affordability': ['annual_income', 'monthly_outgoings', 'deposit'],
+                'repayment': ['loan_amount', 'interest_rate'],
+                'remortgage': ['current_balance', 'current_rate', 'new_rate'],
+                'valuation': ['postcode', 'property_type', 'bedrooms']
+            };
+            
+            const required = requiredFields[calculatorType] || [];
+            
+            for (let field of required) {
+                if (!data[field] || data[field] === '' || data[field] === 0) {
+                    return false;
+                }
             }
             
-            return data;
+            return true;
         },
         
         displayResults: function(results, calculatorType, $calculator) {
@@ -141,27 +177,34 @@
             
             let html = '';
             
-            switch (calculatorType) {
-                case 'affordability':
-                    html = this.renderAffordabilityResults(results);
-                    break;
-                case 'repayment':
-                    html = this.renderRepaymentResults(results);
-                    break;
-                case 'remortgage':
-                    html = this.renderRemortgageResults(results);
-                    break;
-                case 'valuation':
-                    html = this.renderValuationResults(results);
-                    break;
+            try {
+                switch (calculatorType) {
+                    case 'affordability':
+                        html = this.renderAffordabilityResults(results);
+                        break;
+                    case 'repayment':
+                        html = this.renderRepaymentResults(results);
+                        break;
+                    case 'remortgage':
+                        html = this.renderRemortgageResults(results);
+                        break;
+                    case 'valuation':
+                        html = this.renderValuationResults(results);
+                        break;
+                    default:
+                        html = '<div class="alert alert-warning">Unknown calculator type</div>';
+                }
+                
+                $content.html(html);
+                $result.show();
+                
+                // Add animations
+                $result.removeClass('fade-in');
+                setTimeout(() => $result.addClass('fade-in'), 10);
+            } catch (error) {
+                console.error('Error displaying results:', error);
+                this.showError('Error displaying results. Please try again.');
             }
-            
-            $content.html(html);
-            $result.show();
-            
-            // Add animations
-            $result.addClass('fade-in');
-            setTimeout(() => $result.removeClass('fade-in'), 500);
         },
         
         renderAffordabilityResults: function(results) {
@@ -227,20 +270,24 @@
                         <h4>With Overpayments</h4>
                         <div class="amount">£${this.formatCurrency(results.total_monthly_with_overpayment)}</div>
                     </div>
-                    ` : ''}
+                    ` : `
                     <div class="result-card">
                         <h4>Total Interest</h4>
                         <div class="amount">£${this.formatCurrency(results.total_interest)}</div>
                     </div>
+                    `}
                     <div class="result-card">
                         <h4>Total Amount Paid</h4>
                         <div class="amount">£${this.formatCurrency(results.total_paid)}</div>
                     </div>
+                    ${results.overpayment_savings > 0 ? `
+                    <div class="result-card positive">
+                        <h4>Interest Saved</h4>
+                        <div class="amount">£${this.formatCurrency(results.overpayment_savings)}</div>
+                    </div>
+                    ` : ''}
                 </div>
                 ${overpaymentSection}
-                <div class="repayment-chart">
-                    <canvas id="repayment-chart-${Date.now()}"></canvas>
-                </div>
             `;
         },
         
@@ -374,11 +421,19 @@
             const value = parseFloat($input.val());
             
             if (!isNaN(value) && $input.attr('name') !== 'interest_rate') {
+                // Don't format if it's a decimal field like interest rate
+                if ($input.attr('step') && $input.attr('step').includes('.')) {
+                    return;
+                }
                 $input.val(value.toLocaleString('en-GB'));
             }
         },
         
         formatCurrency: function(amount) {
+            if (typeof amount !== 'number' || isNaN(amount)) {
+                return '0';
+            }
+            
             return new Intl.NumberFormat('en-GB', {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0
@@ -386,13 +441,17 @@
         },
         
         showError: function(message) {
+            // Remove existing errors
+            $('.calculator-error').remove();
+            
             const $error = $('<div class="calculator-error alert alert-danger">' + message + '</div>');
-            $('.uk-mortgage-calc').prepend($error);
+            $('.uk-mortgage-calc').first().prepend($error);
             
             setTimeout(() => $error.fadeOut(), 5000);
         },
         
         showFieldError: function($field, message) {
+            this.clearFieldError($field);
             $field.addClass('error');
             const $error = $('<div class="field-error">' + message + '</div>');
             $field.after($error);
@@ -402,11 +461,18 @@
             $field.removeClass('error').next('.field-error').remove();
         },
         
-        downloadPDF: function() {
+        downloadPDF: function(e) {
+            e.preventDefault();
+            
             const $calculator = $(this).closest('.uk-mortgage-calc');
             const calculatorType = $calculator.data('calculator-type');
             const $form = $calculator.find('.calculator-form');
             const formData = UKMortgageCalculator.collectFormData($form);
+            
+            // Show loading state
+            const $btn = $(this);
+            const originalText = $btn.text();
+            $btn.text('Generating...').prop('disabled', true);
             
             $.ajax({
                 url: ukMortgageAjax.ajax_url,
@@ -418,14 +484,24 @@
                     nonce: ukMortgageAjax.nonce
                 },
                 success: function(response) {
-                    if (response.success) {
+                    if (response.success && response.data.pdf_url) {
                         window.open(response.data.pdf_url, '_blank');
+                    } else {
+                        UKMortgageCalculator.showError('PDF generation failed. Please try again.');
                     }
+                },
+                error: function() {
+                    UKMortgageCalculator.showError('PDF generation failed. Please try again.');
+                },
+                complete: function() {
+                    $btn.text(originalText).prop('disabled', false);
                 }
             });
         },
         
-        emailReport: function() {
+        emailReport: function(e) {
+            e.preventDefault();
+            
             const email = prompt('Enter your email address:');
             if (!email) return;
             
@@ -436,7 +512,7 @@
             }
             
             // Implementation would send email via AJAX
-            alert('Report will be sent to ' + email);
+            alert('Report will be sent to ' + email + ' (Feature coming soon)');
         },
         
         loadInterestRates: function() {
@@ -453,7 +529,9 @@
             window.ukMortgageRates = sampleRates;
         },
         
-        showRateComparison: function() {
+        showRateComparison: function(e) {
+            e.preventDefault();
+            
             if (!window.ukMortgageRates) return;
             
             const modal = `
@@ -472,7 +550,6 @@
             `;
             
             $('body').append(modal);
-            $('.close-modal').on('click', () => $('.rate-comparison-modal').remove());
         },
         
         trackCalculation: function(type, inputs, results) {
@@ -487,8 +564,10 @@
         },
         
         initTooltips: function() {
-            // Initialize tooltips for help text
-            $('[data-toggle="tooltip"]').tooltip();
+            // Initialize tooltips for help text if jQuery UI or Bootstrap is available
+            if (typeof $.fn.tooltip === 'function') {
+                $('[data-toggle="tooltip"]').tooltip();
+            }
         },
         
         debounce: function(func, wait) {
