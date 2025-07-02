@@ -1,0 +1,198 @@
+
+/**
+ * UK Mortgage Calculator - Default Colors
+ * Essential color definitions for the mortgage calculator
+ */
+
+/* Default Color Variables */
+:root {
+  /* Primary Brand Colors - Professional Blue */
+  --uk-mortgage-primary: #1e40af;
+  --uk-mortgage-primary-dark: #1e3a8a;
+  --uk-mortgage-primary-light: #3b82f6;
+  --uk-mortgage-primary-bg: #eff6ff;
+  
+  /* Secondary Colors */
+  --uk-mortgage-secondary: #64748b;
+  --uk-mortgage-secondary-dark: #475569;
+  --uk-mortgage-secondary-light: #94a3b8;
+  --uk-mortgage-secondary-bg: #f8fafc;
+  
+  /* Success Colors */
+  --uk-mortgage-success: #059669;
+  --uk-mortgage-success-dark: #047857;
+  --uk-mortgage-success-light: #10b981;
+  --uk-mortgage-success-bg: #ecfdf5;
+  
+  /* Warning Colors */
+  --uk-mortgage-warning: #d97706;
+  --uk-mortgage-warning-dark: #b45309;
+  --uk-mortgage-warning-light: #f59e0b;
+  --uk-mortgage-warning-bg: #fffbeb;
+  
+  /* Error Colors */
+  --uk-mortgage-error: #dc2626;
+  --uk-mortgage-error-dark: #b91c1c;
+  --uk-mortgage-error-light: #ef4444;
+  --uk-mortgage-error-bg: #fef2f2;
+  
+  /* Neutral Colors */
+  --uk-mortgage-white: #ffffff;
+  --uk-mortgage-gray-50: #f9fafb;
+  --uk-mortgage-gray-100: #f3f4f6;
+  --uk-mortgage-gray-200: #e5e7eb;
+  --uk-mortgage-gray-300: #d1d5db;
+  --uk-mortgage-gray-400: #9ca3af;
+  --uk-mortgage-gray-500: #6b7280;
+  --uk-mortgage-gray-600: #4b5563;
+  --uk-mortgage-gray-700: #374151;
+  --uk-mortgage-gray-800: #1f2937;
+  --uk-mortgage-gray-900: #111827;
+  
+  /* Text Colors */
+  --uk-mortgage-text-primary: #1f2937;
+  --uk-mortgage-text-secondary: #4b5563;
+  --uk-mortgage-text-muted: #6b7280;
+  --uk-mortgage-text-light: #9ca3af;
+  --uk-mortgage-text-white: #ffffff;
+  
+  /* Border Colors */
+  --uk-mortgage-border: #e5e7eb;
+  --uk-mortgage-border-light: #f3f4f6;
+  --uk-mortgage-border-focus: #3b82f6;
+  
+  /* Gradients */
+  --uk-mortgage-gradient-primary: linear-gradient(135deg, var(--uk-mortgage-primary) 0%, var(--uk-mortgage-primary-dark) 100%);
+  --uk-mortgage-gradient-success: linear-gradient(135deg, var(--uk-mortgage-success) 0%, var(--uk-mortgage-success-dark) 100%);
+  --uk-mortgage-gradient-warning: linear-gradient(135deg, var(--uk-mortgage-warning) 0%, var(--uk-mortgage-warning-dark) 100%);
+  --uk-mortgage-gradient-error: linear-gradient(135deg, var(--uk-mortgage-error) 0%, var(--uk-mortgage-error-dark) 100%);
+  --uk-mortgage-gradient-subtle: linear-gradient(135deg, var(--uk-mortgage-gray-50) 0%, var(--uk-mortgage-gray-100) 100%);
+  
+  /* Shadows */
+  --uk-mortgage-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --uk-mortgage-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --uk-mortgage-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --uk-mortgage-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --uk-mortgage-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Color Scheme Variations */
+
+/* Green Finance Scheme */
+.uk-color-scheme-green {
+  --uk-mortgage-primary: #059669;
+  --uk-mortgage-primary-dark: #047857;
+  --uk-mortgage-primary-light: #10b981;
+  --uk-mortgage-primary-bg: #ecfdf5;
+  --uk-mortgage-gradient-primary: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+/* Purple Modern Scheme */
+.uk-color-scheme-purple {
+  --uk-mortgage-primary: #7c3aed;
+  --uk-mortgage-primary-dark: #6d28d9;
+  --uk-mortgage-primary-light: #8b5cf6;
+  --uk-mortgage-primary-bg: #f5f3ff;
+  --uk-mortgage-gradient-primary: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
+/* Orange Warm Scheme */
+.uk-color-scheme-orange {
+  --uk-mortgage-primary: #ea580c;
+  --uk-mortgage-primary-dark: #c2410c;
+  --uk-mortgage-primary-light: #fb923c;
+  --uk-mortgage-primary-bg: #fff7ed;
+  --uk-mortgage-gradient-primary: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+}
+
+/* Teal Professional Scheme */
+.uk-color-scheme-teal {
+  --uk-mortgage-primary: #0d9488;
+  --uk-mortgage-primary-dark: #0f766e;
+  --uk-mortgage-primary-light: #14b8a6;
+  --uk-mortgage-primary-bg: #f0fdfa;
+  --uk-mortgage-gradient-primary: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+}
+
+/* Navy Corporate Scheme */
+.uk-color-scheme-navy {
+  --uk-mortgage-primary: #1e3a8a;
+  --uk-mortgage-primary-dark: #1d4ed8;
+  --uk-mortgage-primary-light: #3b82f6;
+  --uk-mortgage-primary-bg: #eff6ff;
+  --uk-mortgage-gradient-primary: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+}
+
+/* Smooth transitions for color scheme changes */
+.uk-mortgage-calc {
+  transition: all 0.3s ease;
+}
+
+.uk-mortgage-calc.color-scheme-changing {
+  transition: all 0.3s ease;
+}
+
+/* Ensure proper color application */
+.uk-mortgage-calc .btn-primary {
+  background: var(--uk-mortgage-gradient-primary);
+  color: var(--uk-mortgage-text-white);
+}
+
+.uk-mortgage-calc .form-control:focus {
+  border-color: var(--uk-mortgage-primary);
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+.uk-mortgage-calc .result-card.primary {
+  background: var(--uk-mortgage-gradient-primary);
+  color: var(--uk-mortgage-text-white);
+  border-color: var(--uk-mortgage-primary);
+}
+
+.uk-mortgage-calc .result-card.positive {
+  background: var(--uk-mortgage-gradient-success);
+  color: var(--uk-mortgage-text-white);
+  border-color: var(--uk-mortgage-success);
+}
+
+.uk-mortgage-calc .result-card.negative {
+  background: var(--uk-mortgage-gradient-error);
+  color: var(--uk-mortgage-text-white);
+  border-color: var(--uk-mortgage-error);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --uk-mortgage-white: #1f2937;
+    --uk-mortgage-gray-50: #374151;
+    --uk-mortgage-gray-100: #4b5563;
+    --uk-mortgage-text-primary: #f9fafb;
+    --uk-mortgage-text-secondary: #d1d5db;
+    --uk-mortgage-text-muted: #9ca3af;
+    --uk-mortgage-border: #4b5563;
+    --uk-mortgage-border-light: #374151;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  :root {
+    --uk-mortgage-primary: #000080;
+    --uk-mortgage-success: #006400;
+    --uk-mortgage-error: #8b0000;
+    --uk-mortgage-text-primary: #000000;
+    --uk-mortgage-border: #000000;
+  }
+}
+
+/* Print styles */
+@media print {
+  :root {
+    --uk-mortgage-primary: #000000;
+    --uk-mortgage-success: #000000;
+    --uk-mortgage-error: #000000;
+    --uk-mortgage-text-primary: #000000;
+    --uk-mortgage-border: #000000;
+  }
+}
